@@ -4,7 +4,7 @@ import System.Random
 data Card = Card { rank :: String, suit :: String} deriving (Show, Eq)
 
 -- A hand in a texas holden poker --
-data Hand = Hand Card Card Card deriving (Show, Eq)
+data Hand = Hand Card Card deriving (Show, Eq)
 
 -- Generates a full deck of cards for a texas holden poker game --
 deck :: [Card]
@@ -38,8 +38,8 @@ hand' xs n p_cards c_acc h_acc = do
     c <- pick xs
     if n == 0
         then return h_acc
-    else if length c_acc == 3
-        then hand' (remainingCards xs p_cards c) (n-1) p_cards [] (Hand (c_acc !! 0) (c_acc !! 1) (c_acc !! 2):h_acc)
+    else if length c_acc == 2
+        then hand' (remainingCards xs p_cards c) (n-1) p_cards [] (Hand (c_acc !! 0) (c_acc !! 1):h_acc)
     else
         hand' (remainingCards xs p_cards c) n (p_cards ++ c_acc) (c:c_acc) h_acc
 
