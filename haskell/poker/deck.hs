@@ -1,7 +1,7 @@
 import System.Random
 
 -- A card that have a rank and a suit e.g. ("Ace", "Spades") --
-data Card = Card { rank :: String, suit :: String} deriving (Show, Eq)
+data Card = Card { rank :: String, suit :: String } deriving (Show, Eq)
 
 -- A hand in a texas holden poker --
 data Hand = Hand Card Card deriving (Show, Eq)
@@ -17,15 +17,14 @@ deck = [Card {rank=x, suit=y} |
 -- Pick a random card from a card deck --
 pick :: [Card] -> IO Card
 pick xs = do
-    i <- randomRIO(0, (length xs)-1)
+    i <- randomRIO(0, length xs-1)
     return (xs !! i)
 
 -- Return n texas holden poker hands of cards  --
 --      >> xs - a deck with all cards of texas holden poker
 --      >> n - how many hands to generate
 hand :: [Card] -> Int -> IO [Hand]
-hand xs n = do
-    hand' xs n [] [] []
+hand xs n = hand' xs n [] [] []
 
 -- Auxiliar function to generate hands --
 --      >> xs - a list of cards
@@ -39,7 +38,7 @@ hand' xs n p_cards c_acc h_acc = do
     if n == 0
         then return h_acc
     else if length c_acc == 2
-        then hand' (remainingCards xs p_cards c) (n-1) p_cards [] (Hand (c_acc !! 0) (c_acc !! 1):h_acc)
+        then hand' (remainingCards xs p_cards c) (n-1) p_cards [] (Hand (head c_acc) (c_acc !! 1):h_acc)
     else
         hand' (remainingCards xs p_cards c) n (p_cards ++ c_acc) (c:c_acc) h_acc
 
@@ -47,4 +46,4 @@ hand' xs n p_cards c_acc h_acc = do
 --      >> xs - a list of cards
 --      >> ys - a list with already picked cards
 --      >> e - the most recent picked card that is not in the picked card list
-remainingCards xs ys e = [x | x <- xs, x /= e, elem e ys == False]
+remainingCards xs ys e = [x | x <- xs, x /= e, e `notElem` ys]
