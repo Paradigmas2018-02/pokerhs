@@ -1,3 +1,12 @@
+module Deck (
+    Card(..),
+    Hand(..),
+    deck,
+    pick,
+    hand,
+    remainingDeck
+) where
+
 import System.Random
 
 -- A card that have a rank and a suit e.g. ("Ace", "Spades") --
@@ -25,6 +34,10 @@ pick xs = do
 --      >> n - how many hands to generate
 hand :: [Card] -> Int -> IO [Hand]
 hand xs n = hand' xs n [] [] []
+
+-- Return a deck with all remaining cards on a deck --
+--      >> xs - a list with already used cards
+remainingDeck xs = [x | x <- deck, x `notElem` xs]
 
 -- Auxiliar function to generate hands --
 --      >> xs - a list of cards
