@@ -4,7 +4,12 @@ module Deck (
     deck,
     pick,
     hand,
-    remainingDeck
+    remainingDeck,
+    remainingCards,
+    splitHands,
+    splitHand,
+    createHand,
+    canMakeHand,
 ) where
 
 import System.Random
@@ -15,6 +20,7 @@ data Card = Card { rank :: String, suit :: String } deriving (Show, Eq)
 -- A hand in a texas holden poker --
 data Hand = Hand Card Card deriving (Show, Eq)
 
+
 -- Generates a full deck of cards for a texas holden poker game --
 deck :: [Card]
 deck = [Card {rank=x, suit=y} |
@@ -23,40 +29,69 @@ deck = [Card {rank=x, suit=y} |
             y <- ["Clubs", "Diamonds", "Hearts", "Spades"]
         ]
 
+
 -- Pick a random card from a card deck --
+--      >> xs - a list of cards
 pick :: [Card] -> IO Card
 pick xs = do
     i <- randomRIO(0, length xs-1)
     return (xs !! i)
 
--- Return n texas holden poker hands of cards  --
---      >> xs - a deck with all cards of texas holden poker
---      >> n - how many hands to generate
+
 hand :: [Card] -> Int -> IO [Hand]
-hand xs n = hand' xs n [] [] []
+hand xs n = 
+    core xs n [] []
+    where core xs n c_acc h_acc = do
+            c <- pick xs
+            if n == 0
+                then return h_acc
+            else if canMakeHand c_acc
+                then core (remaining xs c_acc c) (n-1) [] (createHand c_acc:h_acc)
+            else
+                core (remaining xs c_acc c) n (c:c_acc) h_acc
+
+          remaining xs ys e = [x | x <- xs, x /= e, e `notElem` ys]
+
 
 -- Return a deck with all remaining cards on a deck --
 --      >> xs - a list with already used cards
-remainingDeck xs = [x | x <- deck, x `notElem` xs]
+remainingDeck :: IO [Card] -> IO [Card]
+remainingDeck xs = do
+    ys <- xs 
+    return [y | y <- deck, y `notElem` ys]
 
--- Auxiliar function to generate hands --
---      >> xs - a list of cards
---      >> n - number of hands to generate
---      >> p_cards - cards that already have been picked
---      >> c_acc - card accumulator to generate a hand when reaches 3 cards
---      >> h_acc - hand accumulator to return n hands
-hand' :: [Card] -> Int -> [Card] -> [Card] -> [Hand] -> IO [Hand]
-hand' xs n p_cards c_acc h_acc = do
-    c <- pick xs
-    if n == 0
-        then return h_acc
-    else if length c_acc == 2
-        then hand' (remainingCards xs p_cards c) (n-1) p_cards [] (Hand (head c_acc) (c_acc !! 1):h_acc)
-    else
-        hand' (remainingCards xs p_cards c) n (p_cards ++ c_acc) (c:c_acc) h_acc
 
--- Auxiliar function get a list of cards that have not been picked yet  --
+-- Return a list of cards that have not been picked yet  --
 --      >> xs - a list of cards
 --      >> ys - a list with already picked cards
---      >> e - the most recent picked card that is not in the picked card list
-remainingCards xs ys e = [x | x <- xs, x /= e, e `notElem` ys]
+remainingCards xs ys = [x | x <- xs, x `notElem` ys]
+
+
+-- Convert a list of hands of cards to a list of cards --
+--      >> xs - a list of hands
+splitHands :: IO [Hand] -> IO [Card]
+splitHands xs = do
+    ys <- xs
+    core ys []
+    where core xs c_acc
+            | null xs = return c_acc
+            | otherwise = core (tail xs) (splitHand (head xs) ++ c_acc)
+
+
+-- Convert one unique hand into a list of cards --
+splitHand :: Hand -> [Card]
+splitHand (Hand c1 c2) = [c1, c2]
+
+
+-- Create a hand with the two first elements on a list --
+createHand :: [Card] -> Hand
+createHand [] = error "You must provide at least two cards for making a hand"
+createHand [x] = error "You must provide at least two cards for making a hand"
+createHand x = Hand (head x) (head (tail x))
+
+
+-- Verify if a list of cards can generate a hand --
+canMakeHand :: [Card] -> Bool
+canMakeHand xs
+    | null xs = False
+    | otherwise = length xs >= 2
