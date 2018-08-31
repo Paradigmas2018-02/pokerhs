@@ -72,10 +72,7 @@ remainingCards xs ys = [x | x <- xs, x `notElem` ys]
 splitHands :: IO [Hand] -> IO [Card]
 splitHands xs = do
     ys <- xs
-    core ys []
-    where core xs c_acc
-            | null xs = return c_acc
-            | otherwise = core (tail xs) (splitHand (head xs) ++ c_acc)
+    return $ concat [splitHand x | x <- ys]
 
 
 -- Convert one unique hand into a list of cards --
@@ -86,7 +83,7 @@ splitHand (Hand c1 c2) = [c1, c2]
 -- Create a hand with the two first elements on a list --
 createHand :: [Card] -> Hand
 createHand [] = error "You must provide at least two cards for making a hand"
-createHand [x] = error "You must provide at least two cards for making a hand"
+createHand [n] = error "You must provide at least two cards for making a hand"
 createHand x = Hand (head x) (head (tail x))
 
 
