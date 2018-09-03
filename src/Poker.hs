@@ -26,10 +26,13 @@ development = do
   clear
   putStrLn "Essa feature está sendo desenvolvida. Por favor aguarde novas atualizações do sistema";
 
-turn :: IO()
-turn = do
+-- opcao bot1, opcao bot2, opcao bot3, opcao bot 4, opcao bot 5, valorApostaAtual, 
+turn :: Int > Int -> Int -> Int -> Int -> IO()  	
+turn op1 op2 op3 op4 op5 valorAposta = do
   clear
   putStrLn "=== SEU TURNO ===\n";
+  putStrLn "Valor Aposta: "
+  putStrLn valorAposta
   putStrLn "Escolha uma ação\n";
   putStrLn "1 - Apostar\n";
   putStrLn "2 - Cobrir apostar\n";
