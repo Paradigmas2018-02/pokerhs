@@ -4,7 +4,7 @@ module Player (
     charge,
 ) where
 
-data Player = Player { name :: String, tokens :: Int} deriving (Show, Eq)
+data Player = Player { name :: String, tokens :: Int } deriving (Show, Eq)
 
 
 -- Make a bet to the game --
