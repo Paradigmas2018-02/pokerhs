@@ -1,6 +1,7 @@
 module Deck (
     Card(..),
     Hand(..),
+    Rank(..),
     deck,
     pick,
     hand,
