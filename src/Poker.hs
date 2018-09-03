@@ -8,7 +8,12 @@ import System.IO
 import Data.Char
 import Control.Monad
 
-clear = system "clear"
+clear = system "clear";
+bet = "apostou";
+cover = "cobriu a aposta";
+out = "fugiu";
+check = "passou";
+
 
 flop :: IO [Card] -> IO [Card]
 flop xs = do
@@ -25,6 +30,12 @@ development :: IO()
 development = do
   clear
   putStrLn "Essa feature está sendo desenvolvida. Por favor aguarde novas atualizações do sistema";
+
+showActions :: [IO] -> IO()
+showActions xs = do
+  if ((head xs) == "1") then (putStrLn bet) 
+
+
 
 -- opcao bot1, opcao bot2, opcao bot3, opcao bot 4, opcao bot 5, valorApostaAtual, 
 turn :: Int > Int -> Int -> Int -> Int -> IO()  	
