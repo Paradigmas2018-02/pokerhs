@@ -3,7 +3,7 @@ module Deck (
     Hand(..),
     deck,
     pick,
-    hand,
+    giveCards,
     remainingDeck,
     remainingCards,
     splitHands,
@@ -14,6 +14,7 @@ module Deck (
 ) where
 
 import System.Random
+import Utils (createTuples)
 
 -- A rank of a card has a value and a name
 data Rank = Rank { value :: Int, name :: String} deriving (Show, Eq)
@@ -25,11 +26,12 @@ data Card = Card { rank :: Rank , suit :: String } deriving (Show, Eq)
 data Hand = Hand Card Card deriving (Show, Eq)
 
 
--- Generate all Card Ranks for a Card e.g. Rank {value=1, name="ace"}
+-- Generate all card ranks for a card e.g. Rank {value=1, name="ace"}
 ranks =
     [ Rank{value = fst x, name = snd x} | x <- tuples ]
     where 
-        tuples = zip [1..13] ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"]
+        tuples = zip [1..13] ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", 
+                              "Nine", "Ten", "Jack", "Queen", "King"]
 
         
 -- Generates a full deck of cards for a texas holden poker game --
@@ -61,6 +63,20 @@ hand xs n =
                 core (remaining xs c_acc c) n (c:c_acc) h_acc
 
           remaining xs ys e = [x | x <- xs, x /= e, e `notElem` ys]
+
+
+giveCards :: [Card] -> Int -> IO [(Card, Card)]
+giveCards xs n =
+    core xs (n*2) []
+    where core xs n c_acc = do
+            c <- pick xs
+            if n == 0
+                then return (createTuples c_acc)
+            else
+                core (remaining xs c_acc c) (n-1) (c:c_acc)
+
+          remaining xs ys e = [x | x <- xs, x /= e, e `notElem` ys]
+          
 
 
 -- Return a deck with all remaining cards on a deck --

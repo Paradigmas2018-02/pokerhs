@@ -1,8 +1,10 @@
 module Poker (
     flop,
+    newRoles,
 ) where
 
 import Deck (Card, pick, remainingCards)
+import Player(Player)
 import System.Process
 import System.IO
 import Data.Char
@@ -26,6 +28,16 @@ flop xs = do
             else
                 core (remainingCards xs (c:c_acc)) (c:c_acc)
 
+
+-- Define the new big blind and the new small blind --
+-- We treat the player list as a stack e.g [p1, p2, p3]
+-- where p1 and p2 are big and small blind respectively.
+-- If newRoles is called the new stack is [p2, p3, p1]
+-- where p2 and p3 are big and small blind respectively.
+newRoles :: [Player] -> [Player]
+newRoles xs = tail xs ++ [head xs]
+
+
 development :: IO()
 development = do
   clear
@@ -43,7 +55,7 @@ turn betValue = do
   clear
   putStrLn "=== SEU TURNO ===\n";
   putStrLn "Valor Aposta: "
-  putStrLn betValue
+--   putStrLn betValue
   putStrLn "Escolha uma ação\n";
   putStrLn "1 - Apostar\n";
   putStrLn "2 - Cobrir apostar\n";
