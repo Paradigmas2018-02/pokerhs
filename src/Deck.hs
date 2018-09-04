@@ -8,11 +8,10 @@ module Deck (
     remainingDeck,
     remainingCards,
     splitCardTuples,
-    splitCardTuple,
 ) where
 
 import System.Random
-import Utils (createTuples)
+import Utils (createTuples, destroyTuples)
 
 -- A rank of a card has a value and a name
 data Rank = Rank { value :: Int, name :: String} deriving (Show, Eq)
@@ -81,11 +80,4 @@ remainingCards xs ys = [x | x <- xs, x `notElem` ys]
 -- Convert a list of card tuples to a list of cards --
 --      >> xs - a list of card tuples
 splitCardTuples :: IO [(Card, Card)] -> IO [Card]
-splitCardTuples xs = do
-    ys <- xs
-    return $ concat [splitCardTuple x | x <- ys]
-
-
--- Convert one unique tuple of cards into a list of cards --
-splitCardTuple :: (Card, Card) -> [Card]
-splitCardTuple (a, b) = [a, b]
+splitCardTuples xs = destroyTuples <$> xs
