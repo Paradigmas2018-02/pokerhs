@@ -8,7 +8,7 @@ playerCards = giveCards deck 6
 
 players = do
     xs <- playerCards
-    return [ 
+    return [
         Player { name="Daniel Negreanu", tokens=initialTokens, cards=head xs},
         Player { name="Erik Seidel", tokens=initialTokens, cards=xs !! 1},
         Player { name="Fedor Holz", tokens=initialTokens, cards=xs !! 2},

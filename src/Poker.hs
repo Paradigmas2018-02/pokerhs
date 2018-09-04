@@ -4,17 +4,19 @@ module Poker (
 ) where
 
 import Deck (Card, pick, remainingCards)
-import Player(Player)
+import Player(Player(..), bet, charge)
+import Main(initialTokens, players, playerCards)
+import Utils(development)
 import System.Process
 import System.IO
 import Data.Char
 import Control.Monad
 
 clear = system "clear";
-bet = "apostou";
-cover = "cobriu a aposta";
-out = "fugiu";
-check = "passou";
+bet_message = "bet";
+cover_message = "covered";
+out_message = "run out";
+check_message = "pass";
 
 
 flop :: IO [Card] -> IO [Card]
@@ -37,33 +39,38 @@ flop xs = do
 newRoles :: [Player] -> [Player]
 newRoles xs = tail xs ++ [head xs]
 
+showActions :: String -> (Player,Int) -> IO()
+showActions acao (x, y) = do
+  case acao of
+    "1" -> putStrLn ("Player: " ++ (name x) ++ " " ++ bet_message)
+    "2" -> putStrLn ("Player: " ++ (name x) ++ " " ++ cover_message)
+    "3" -> putStrLn ("Player: " ++ (name x) ++ " " ++ out_message)
+    "4" -> putStrLn ("Player: " ++ (name x) ++ " " ++ check_message)
 
-development :: IO()
-development = do
-  clear
-  putStrLn "Essa feature está sendo desenvolvida. Por favor aguarde novas atualizações do sistema";
-
--- showActions :: [IO] -> IO()
--- showActions xs = do
---   if ((head xs) == "1") then (putStrLn bet)
-
--- opcao bot1, opcao bot2, opcao bot3, opcao bot 4, opcao bot 5, valorApostaAtual,
-
--- valor da aposta ( Começa com o valor inicial )
-turn :: Int -> IO()
-turn betValue = do
+  -- Player's Turn --
+  --      >> player - player who is playing
+  --      >> betValue - actual value of the bet
+turn :: Player -> Int -> IO()
+turn player betValue= do
   clear
   putStrLn "=== SEU TURNO ===\n";
-  putStrLn "Valor Aposta: "
---   putStrLn betValue
-  putStrLn "Escolha uma ação\n";
-  putStrLn "1 - Apostar\n";
-  putStrLn "2 - Cobrir apostar\n";
-  putStrLn "3 - Fugir\n";
-  putStrLn "4 - Passar\n";
+  putStrLn "Bet: "
+  print betValue;
+  putStrLn "Choose an action\n";
+  putStrLn "1 - Bet\n";
+  putStrLn "2 - Cover\n";
+  putStrLn "3 - Out\n";
+  putStrLn "4 - Pass\n";
   option <- getLine;
   case option of
-    "1" -> development
-    "2" -> development
-    "3" -> development
-    "4" -> development
+    "1" -> showActions "1" (bet player 0 0);
+    "2" -> showActions "2" (bet player 0 0);
+    "3" -> showActions "3" (bet player 0 0);
+    "4" -> showActions "4" (bet player 0 0);
+
+
+-- Function test to execute the game
+testMain = do
+  xs <- playerCards
+  let player = Player { name="You", tokens=initialTokens, cards=xs !! 5};
+  turn player 0;

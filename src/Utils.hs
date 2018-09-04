@@ -1,6 +1,7 @@
 module Utils(
     createTuples,
     destroyTuples,
+    development
 ) where
 
 
@@ -23,3 +24,6 @@ destroyTuples xs = concat [destroyTuple x | x <- xs]
 -- e.g (1,2) -> [1,2]
 destroyTuple :: (a,a) -> [a]
 destroyTuple (x, y) = [x, y]
+
+development :: IO()
+development = putStrLn "Essa feature está sendo desenvolvida. Por favor aguarde novas atualizações do sistema";
