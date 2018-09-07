@@ -1,11 +1,12 @@
 module Poker (
     flop,
     newRoles,
+    Hand(..),
 ) where
 
 import Deck (Card, pick, remainingCards)
 import Player(Player(..), bet, charge)
-import Utils(development, createTuples, findByValue)
+import Utils(development, createTuples)
 import System.Process
 import System.IO
 import Data.Char
@@ -91,8 +92,3 @@ giveCards xs n =
                 core (remaining xs c_acc c) (n-1) (c:c_acc)
 
           remaining xs ys e = [x | x <- xs, x /= e, e `notElem` ys]
-
-
-
-
-
