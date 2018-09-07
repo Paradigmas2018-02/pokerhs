@@ -11,6 +11,9 @@ import System.IO
 import Data.Char
 import Control.Monad
 
+-- A hand in a texas holden poker --
+data Hand = Hand { hvalue :: Int, hcards :: [Card]} deriving (Show, Eq, Ord)
+
 clear = system "clear";
 bet_message = "bet";
 cover_message = "covered";
