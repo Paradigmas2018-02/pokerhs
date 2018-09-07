@@ -1,7 +1,8 @@
 
 
 import Player(Player(..))
-import Deck(giveCards, deck)
+import Deck(deck)
+import Poker(giveCards)
 
 initialTokens = 200
 playerCards = giveCards deck 6
