@@ -53,3 +53,23 @@ findTwoPairs xs =
                     Nothing -> Nothing
     
     in if length xs <= 3 then Nothing else core xs []
+
+
+-- Find a Full house hand, made of Three of a kind and a pair
+findFullHouse :: [Card] -> Maybe Hand
+findFullHouse xs =
+    let core xs acc
+            | length acc == 5 = Just (Hand {hvalue = 7, hcards = acc}) 
+            | null xs = Nothing
+            | null acc =
+                -- Three of a kind must be found first or it will be matched as a pair.
+                case findThreeKind xs of 
+                    Just hand -> core (remainingCards xs (acc ++ hcards hand)) (acc ++ hcards hand)
+                    Nothing -> Nothing
+            | otherwise =
+                case findPair xs of
+                    Just hand -> core xs (hcards hand ++ acc)
+                    Nothing -> Nothing
+                    
+    -- Less than 4 cards can't be a Full House
+    in if length xs <= 4 then Nothing else core xs []
