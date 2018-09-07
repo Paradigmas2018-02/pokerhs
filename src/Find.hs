@@ -16,17 +16,21 @@ findPair list
             Just card -> Just (Hand {hvalue=2, hcards=[head list, card]}) 
             Nothing -> findPair (tail list)
 
-
+            
+-- Find three cards with the same value (kind) --
+-- >> xs - a list of cards
 findThreeKind :: [Card] -> Maybe Hand
 findThreeKind xs =
-    if length xs <= 2 then Nothing else core xs []
-    where core xs acc = do
-            if length acc == 3 then Just (Hand {hvalue = 4, hcards = acc}) else if null xs then Nothing
-            else if null acc then
+    let core xs acc 
+            | length acc == 3 = Just (Hand {hvalue = 4, hcards = acc})
+            | null xs = Nothing
+            | null acc =
                 case findPair xs of 
                     Just pair -> core (remainingCards xs (acc ++ hcards pair)) (acc ++ hcards pair)
                     Nothing -> Nothing
-            else
+            | otherwise =
                 case findByValue xs (head acc) of
                     Just card -> core xs (card:acc)
                     Nothing -> Nothing
+
+    in if length xs <= 2 then Nothing else core xs []
