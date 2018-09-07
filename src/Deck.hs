@@ -2,6 +2,7 @@ module Deck (
     Card(..),
     Hand(..),
     Rank(..),
+    Suit(..),
     deck,
     pick,
     giveCards,
@@ -14,10 +15,13 @@ import System.Random
 import Utils (createTuples, destroyTuples)
 
 -- A rank of a card has a value and a name
-data Rank = Rank { value :: Int, name :: String} deriving (Show, Eq)
+data Rank = Rank { rvalue :: Int, rname :: String} deriving (Show, Eq)
+
+-- A card suit has a value and a name
+data Suit = Suit { svalue :: Int, sname::String} deriving (Show, Eq)
 
 -- A card that have a rank and a suit e.g. Card (Rank {1, "Ace"}, "Spades") --
-data Card = Card { rank :: Rank , suit :: String } deriving (Show, Eq)
+data Card = Card { rank :: Rank , suit :: Suit } deriving (Show, Eq)
 
 -- A hand in a texas holden poker --
 data Hand = Hand Card Card deriving (Show, Eq)
@@ -25,17 +29,23 @@ data Hand = Hand Card Card deriving (Show, Eq)
 
 -- Generate all card ranks for a card e.g. Rank {value=1, name="ace"}
 ranks =
-    [ Rank{value = fst x, name = snd x} | x <- tuples ]
+    [ Rank{rvalue = fst x, rname = snd x} | x <- tuples ]
     where 
-        tuples = zip [1..13] ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", 
-                              "Nine", "Ten", "Jack", "Queen", "King"]
+        tuples = zip [2..14] ["Two", "Three", "Four", "Five", "Six", "Seven", "Eight", 
+                              "Nine", "Ten", "Jack", "Queen", "King", "Ace"]
 
         
+-- Generate all card suits for a card e.g. Suit {value=1, name="Clubs"}
+suits =
+    [ Suit{svalue = fst x, sname = snd x} | x <- tuples ]
+    where 
+        tuples = zip [1..4] [ "Clubs", "Hearts", "Diamonds", "Spades"]
+
 -- Generates a full deck of cards for a texas holden poker game --
 deck :: [Card]
 deck = [Card {rank=x, suit=y} |
                 x <- ranks,
-                y <- ["Clubs", "Diamonds", "Hearts", "Spades"]
+                y <- suits
         ]
 
 
