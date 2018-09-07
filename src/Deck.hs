@@ -12,13 +12,13 @@ module Deck (
 import System.Random
 
 -- A rank of a card has a value and a name
-data Rank = Rank { rvalue :: Int, rname :: String} deriving (Show, Eq)
+data Rank = Rank { rvalue :: Int, rname :: String} deriving (Show, Eq, Ord)
 
 -- A card suit has a value and a name
-data Suit = Suit { svalue :: Int, sname::String} deriving (Show, Eq)
+data Suit = Suit { svalue :: Int, sname::String} deriving (Show, Eq, Ord)
 
 -- A card that have a rank and a suit e.g. Card (Rank {1, "Ace"}, "Spades") --
-data Card = Card { rank :: Rank , suit :: Suit } deriving (Show, Eq)
+data Card = Card { rank :: Rank , suit :: Suit } deriving (Show, Eq, Ord)
 
 -- A hand in a texas holden poker --
 data Hand = Hand Card Card deriving (Show, Eq)

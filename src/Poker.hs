@@ -5,7 +5,7 @@ module Poker (
 
 import Deck (Card, pick, remainingCards)
 import Player(Player(..), bet, charge)
-import Utils(development, createTuples)
+import Utils(development, createTuples, findByValue)
 import System.Process
 import System.IO
 import Data.Char
@@ -91,3 +91,13 @@ giveCards xs n =
                 core (remaining xs c_acc c) (n-1) (c:c_acc)
 
           remaining xs ys e = [x | x <- xs, x /= e, e `notElem` ys]
+
+
+findPair :: [Card] -> Maybe Hand
+findPair list
+    | null list = Nothing
+    | length list == 1 = Nothing
+    | otherwise = 
+        case findByValue (tail list) (head list) of
+            Just card -> Just (Hand {hvalue=2, hcards=[head list, card]}) 
+            Nothing -> findPair (tail list)

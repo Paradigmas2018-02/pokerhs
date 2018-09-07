@@ -2,7 +2,9 @@ module Utils(
     createTuples,
     destroyTuples,
     development,
-    findCard
+    findCard,
+    findByValue,
+    findBySuit
 ) where
 
 import Deck(Rank(..), Card(..), Suit(..))
