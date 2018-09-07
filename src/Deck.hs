@@ -5,14 +5,11 @@ module Deck (
     Suit(..),
     deck,
     pick,
-    giveCards,
     remainingDeck,
     remainingCards,
-    splitCardTuples,
 ) where
 
 import System.Random
-import Utils (createTuples, destroyTuples)
 
 -- A rank of a card has a value and a name
 data Rank = Rank { rvalue :: Int, rname :: String} deriving (Show, Eq)
@@ -57,20 +54,7 @@ pick xs = do
     return (xs !! i)
 
 
--- Give cards for n players --
---      >> xs - a list of available cards
---      >> n - the number of players
-giveCards :: [Card] -> Int -> IO [(Card, Card)]
-giveCards xs n =
-    core xs (n*2) []
-    where core xs n c_acc = do
-            c <- pick xs
-            if n == 0
-                then return (createTuples c_acc)
-            else
-                core (remaining xs c_acc c) (n-1) (c:c_acc)
 
-          remaining xs ys e = [x | x <- xs, x /= e, e `notElem` ys]
           
 
 -- Return a deck with all remaining cards on a deck --
@@ -86,8 +70,3 @@ remainingDeck xs = do
 --      >> ys - a list with already picked cards
 remainingCards xs ys = [x | x <- xs, x `notElem` ys]
 
-
--- Convert a list of card tuples to a list of cards --
---      >> xs - a list of card tuples
-splitCardTuples :: IO [(Card, Card)] -> IO [Card]
-splitCardTuples xs = destroyTuples <$> xs

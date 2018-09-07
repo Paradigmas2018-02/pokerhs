@@ -5,8 +5,7 @@ module Poker (
 
 import Deck (Card, pick, remainingCards)
 import Player(Player(..), bet, charge)
-import Main(initialTokens, players, playerCards)
-import Utils(development)
+import Utils(development, createTuples)
 import System.Process
 import System.IO
 import Data.Char
@@ -69,8 +68,23 @@ turn player betValue= do
     "4" -> showActions "4" (bet player 0 0);
 
 
--- Function test to execute the game
-testMain = do
-  xs <- playerCards
-  let player = Player { name="You", tokens=initialTokens, cards=xs !! 5};
-  turn player 0;
+-- -- Function test to execute the game
+-- testMain = do
+--   xs <- playerCards
+--   let player = Player { name="You", tokens=initialTokens, cards=xs !! 5};
+--   turn player 0;
+
+-- Give cards for n players --
+--      >> xs - a list of available cards
+--      >> n - the number of players
+giveCards :: [Card] -> Int -> IO [(Card, Card)]
+giveCards xs n =
+    core xs (n*2) []
+    where core xs n c_acc = do
+            c <- pick xs
+            if n == 0
+                then return (createTuples c_acc)
+            else
+                core (remaining xs c_acc c) (n-1) (c:c_acc)
+
+          remaining xs ys e = [x | x <- xs, x /= e, e `notElem` ys]
