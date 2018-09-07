@@ -4,7 +4,7 @@ module Find (
 ) where
 
 import Utils (findByValue)
-import Deck (Card, remainingCards)
+import Deck (Card(..), Rank(..), remainingCards)
 import Poker (Hand(..))
 
 valueHighCard = 1
@@ -84,3 +84,38 @@ findFullHouse xs =
 
     -- Less than 4 cards can't be a Full House
     in if length xs <= 4 then Nothing else core xs []
+
+
+findStraight :: [Card] -> Maybe Hand
+findStraight xs =
+    let core xs acc ys
+            | length acc == 5 = Just (Hand {hvalue = valueStraight, hcards = acc})
+            | null xs = Nothing
+            | otherwise =
+                case findSequence ys (head xs) of
+                    Just seq -> core (tail xs) seq ys
+                    Nothing -> core (tail xs) [] ys
+
+    in if length xs <= 4 then Nothing else core xs [] xs
+
+
+findSequence :: [Card] -> Card -> Maybe [Card]
+findSequence xs x =
+    let core xs x acc 
+            | length acc == 5 = Just acc
+            | otherwise =
+                case findByValue xs x of
+                    Just card -> core xs Card {rank = Rank {rvalue = nextCard card acc, rname = rname $ rank card}, suit = suit card} (card:acc)
+                    Nothing -> Just acc
+    
+    in core xs x []
+
+
+-- Return the next card following this sequence --
+-- [A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, .. A]
+nextCard :: Card -> [Card] -> Int
+nextCard c xs
+    -- The next card after A if there is a K is none. The can't be a sequence like: Q, K, A, 2, 3.
+    | 13 `elem` [rvalue $ rank x | x <- xs] && rvalue (rank c) == 14 = 15
+    | rvalue (rank c) >= 14 = 2
+    | otherwise = rvalue (rank c) + 1
