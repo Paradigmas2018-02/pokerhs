@@ -30,3 +30,17 @@ findThreeKind xs =
                 case findByValue xs (head acc) of
                     Just card -> core xs (card:acc)
                     Nothing -> Nothing
+
+findTwoPairs :: [Card] -> Maybe Hand
+findTwoPairs xs =
+    if length xs <= 3 then Nothing else core xs []
+    where core xs acc = do
+            if length acc == 4 then Just (Hand {hvalue = 3, hcards = acc}) else if null xs then Nothing
+            else if null acc then
+                case findPair xs of 
+                    Just pair -> core (remainingCards xs (acc ++ hcards pair)) (acc ++ hcards pair)
+                    Nothing -> Nothing
+            else
+                case findPair xs of
+                    Just hand -> core xs (hcards hand ++ acc)
+                    Nothing -> Nothing
