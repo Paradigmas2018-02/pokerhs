@@ -3,8 +3,8 @@ module Find (
     findThreeKind,
 ) where
 
-import Utils (findByValue)
-import Deck (Card, remainingCards)
+import Utils (findByValue, findBySuit)
+import Deck (Card(..), Rank(..), Suit(..),remainingCards)
 import Poker (Hand(..))
 
 valueHighCard = 1
@@ -84,3 +84,21 @@ findFullHouse xs =
 
     -- Less than 4 cards can't be a Full House
     in if length xs <= 4 then Nothing else core xs []
+
+-- Find a Flush, five cards of the same suit
+findFlush :: [Card] -> Maybe Hand
+findFlush xs =
+    let core xs acc1 acc2 acc3 acc4
+            | length acc1 >= 5 = Just (Hand {hvalue = valueFlush, hcards = acc1})
+            | length acc2 >= 5 = Just (Hand {hvalue = valueFlush, hcards = acc2})
+            | length acc3 >= 5 = Just (Hand {hvalue = valueFlush, hcards = acc3})
+            | length acc4 >= 5 = Just (Hand {hvalue = valueFlush, hcards = acc4})
+            | null xs = Nothing
+            | otherwise = 
+                case svalue (suit (head xs)) of
+                    1 -> core (tail xs) (head xs : acc1) acc2 acc3 acc4
+                    2 -> core (tail xs) acc1 (head xs : acc2) acc3 acc4
+                    3 -> core (tail xs) acc1 acc2 (head xs : acc3) acc4
+                    4 -> core (tail xs) acc1 acc2 acc3 (head xs : acc4)
+                    _ -> Nothing
+    in if length xs <= 4 then Nothing else core xs [] [] [] []
