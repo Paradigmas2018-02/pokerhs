@@ -4,7 +4,7 @@ module Find (
 ) where
 
 import Deck (Card(..), Rank(..), Suit(..),remainingCards)
-import Utils (findByValue, findBySuit)
+import Utils (findByValue, findBySuit, findCard)
 import Poker (Hand(..))
 
 valueHighCard = 1
@@ -134,6 +134,30 @@ findFourKind xs =
     in core xs []
 
 
+findStraightFlush :: [Card] -> Maybe Hand
+findStraightFlush xs =
+    let core xs acc ys
+            | length acc == 5 = Just (Hand {hvalue = valueStraightFlush, hcards = acc})
+            | null xs = Nothing
+            | otherwise =
+                case findSequenceWithSuit ys (head xs) of
+                    Just seq -> core (tail xs) seq ys
+                    Nothing -> core (tail xs) [] ys
+
+    in if length xs <= 4 then Nothing else core xs [] xs
+
+
+findRoyalFlush :: [Card] -> Maybe Hand
+findRoyalFlush xs =
+    case findStraightFlush xs of
+        Just hand -> if contains [rvalue $ rank x | x <- hcards hand] [10, 11, 12, 13, 14]
+            then
+                Just (Hand {hvalue = valueRoyalFlush, hcards = hcards hand})
+            else
+                Nothing
+        Nothing -> Nothing 
+
+
 findSequence :: [Card] -> Card -> Maybe [Card]
 findSequence xs x =
     let core xs x acc 
@@ -146,6 +170,18 @@ findSequence xs x =
     in core xs x []
 
 
+findSequenceWithSuit :: [Card] -> Card -> Maybe [Card]
+findSequenceWithSuit xs x =
+    let core xs x acc
+            | length acc == 5 = Just acc
+            | otherwise = 
+                case findCard xs x of
+                    Just card -> core xs Card {rank = Rank {rvalue = nextCard card acc, rname = rname $ rank card}, suit = suit card} (card:acc)
+                    Nothing -> Just acc
+                    
+    in core xs x []
+
+
 -- Return the next card following this sequence --
 -- [A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, .. A]
 nextCard :: Card -> [Card] -> Int
@@ -154,3 +190,12 @@ nextCard c xs
     | 13 `elem` [rvalue $ rank x | x <- xs] && rvalue (rank c) == 14 = 15
     | rvalue (rank c) >= 14 = 2
     | otherwise = rvalue (rank c) + 1
+
+
+-- Check if a list contains all values of another --
+--  >> xs - list that must contains
+--  >> ys - list with values contained on xs
+contains :: Eq a => [a] -> [a] -> Bool
+contains xs ys  
+    | length [x | x <- xs, x `elem` ys] == length ys = True
+    | otherwise = False
