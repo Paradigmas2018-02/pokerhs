@@ -6,6 +6,7 @@ module Find (
 import Deck (Card(..), Rank(..), Suit(..),remainingCards)
 import Utils (findByValue, findBySuit, findCard)
 import Poker (Hand(..))
+import Data.Maybe (fromMaybe)
 
 valueHighCard = 1
 valuePair = 2
@@ -17,6 +18,17 @@ valueFullHouse = 7
 valueFourKind = 8
 valueStraightFlush = 9
 valueRoyalFlush = 10
+
+
+findFunctions = [findRoyalFlush, findStraightFlush, findFourKind,
+                findFullHouse, findFlush, findStraight, findThreeKind,
+                findTwoPairs, findPair]
+
+applyFinds :: [[Card] -> Maybe Hand] -> [Card] -> Hand
+applyFinds fs xs = fromMaybe (applyFinds (tail fs) xs) (head fs xs) 
+
+findHand :: [Card] -> Hand
+findHand = applyFinds findFunctions
 
 findPair :: [Card] -> Maybe Hand
 findPair list
