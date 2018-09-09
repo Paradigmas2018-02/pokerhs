@@ -20,15 +20,18 @@ valueStraightFlush = 9
 valueRoyalFlush = 10
 
 
+-- All find hand functions --
 findFunctions = [findRoyalFlush, findStraightFlush, findFourKind,
                 findFullHouse, findFlush, findStraight, findThreeKind,
                 findTwoPairs, findPair]
 
-applyFinds :: [[Card] -> Maybe Hand] -> [Card] -> Hand
-applyFinds fs xs = fromMaybe (applyFinds (tail fs) xs) (head fs xs) 
 
+-- Return the best hand possible of a list of cards --
 findHand :: [Card] -> Hand
-findHand = applyFinds findFunctions
+findHand xs =
+    let core fs xs = fromMaybe (core (tail fs) xs) (head fs xs)
+    in core findFunctions xs
+
 
 findPair :: [Card] -> Maybe Hand
 findPair list
@@ -97,6 +100,7 @@ findFullHouse xs =
     -- Less than 4 cards can't be a Full House
     in if length xs <= 4 then Nothing else core xs []
 
+    
 -- Find a Flush, five cards of the same suit
 findFlush :: [Card] -> Maybe Hand
 findFlush xs =
