@@ -23,7 +23,7 @@ valueRoyalFlush = 10
 -- All find hand functions --
 findFunctions = [findRoyalFlush, findStraightFlush, findFourKind,
                 findFullHouse, findFlush, findStraight, findThreeKind,
-                findTwoPairs, findPair]
+                findTwoPairs, findPair, findHighCard]
 
 
 -- Return the best hand possible of a list of cards --
@@ -31,6 +31,20 @@ findHand :: [Card] -> Hand
 findHand xs =
     let core fs xs = fromMaybe (core (tail fs) xs) (head fs xs)
     in core findFunctions xs
+
+
+findHighCard :: [Card] -> Maybe Hand
+findHighCard xs =
+    let core xs h_card
+            | null xs = Just Hand{hvalue = valueHighCard, hcards = [h_card]}
+            | otherwise = 
+                if rvalue (rank (head xs)) > rvalue (rank h_card)
+                    then
+                        core (tail xs) (head xs)
+                else
+                    core (tail xs) h_card
+
+    in core xs (head xs)
 
 
 findPair :: [Card] -> Maybe Hand
