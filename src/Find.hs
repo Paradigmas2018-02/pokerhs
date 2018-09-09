@@ -117,6 +117,23 @@ findStraight xs =
     in if length xs <= 4 then Nothing else core xs [] xs
 
 
+findFourKind :: [Card] -> Maybe Hand
+findFourKind xs = 
+    let core xs acc
+            | length acc == 5 = Just (Hand {hvalue = valueFourKind, hcards = acc})
+            | null xs = Nothing
+            | null acc =
+                case findThreeKind xs of
+                    Just hand -> core (remainingCards xs (hcards hand)) (hcards hand ++ acc)
+                    Nothing -> Nothing
+            | otherwise = 
+                case findByValue xs (head acc) of
+                    Just card -> Just (Hand {hvalue = valueFourKind, hcards = card:acc})
+                    Nothing -> Nothing
+
+    in core xs []
+
+
 findSequence :: [Card] -> Card -> Maybe [Card]
 findSequence xs x =
     let core xs x acc 
