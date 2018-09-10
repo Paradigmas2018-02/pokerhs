@@ -1,7 +1,4 @@
-module Find (
-    findPair,
-    findThreeKind,
-) where
+module Find where
 
 import Deck (Card(..), Rank(..), Suit(..),remainingCards)
 import Utils (findByValue, findBySuit, findCard)
@@ -10,16 +7,16 @@ import Data.Maybe (fromMaybe)
 
 -- Constant values for hands in poker
 -- Used to compare poker hands ranks.
-valueHighCard = 1
-valuePair = 2
-valueTwoPair = 3
-valueThreeKind = 4
-valueStraight = 5
-valueFlush = 6
-valueFullHouse = 7
-valueFourKind = 8
-valueStraightFlush = 9
-valueRoyalFlush = 10
+valueHighCard = Rank{rvalue = 1, rname = "HighCard"}
+valuePair = Rank{rvalue = 2, rname = "Pair"}
+valueTwoPair = Rank{rvalue = 3, rname = "Two Pairs"}
+valueThreeKind = Rank{rvalue = 4, rname = "Three of a Kind"}
+valueStraight = Rank{rvalue = 5, rname = "Straight"}
+valueFlush = Rank{rvalue = 6, rname = "Flush"}
+valueFullHouse = Rank{rvalue = 7, rname = "Full House"}
+valueFourKind = Rank{rvalue = 8, rname = "Four of a Kind"}
+valueStraightFlush = Rank{rvalue = 9, rname = "Straight Flush"}
+valueRoyalFlush = Rank{rvalue = 10, rname = "Royal Straight Flush"}
 
 
 -- All functions for finding hands on poker --

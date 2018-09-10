@@ -1,6 +1,5 @@
 module Deck (
     Card(..),
-    Hand(..),
     Rank(..),
     Suit(..),
     deck,

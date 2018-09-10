@@ -5,7 +5,7 @@ module Poker (
     Hand(..),
 ) where
 
-import Deck (Card, pick, remainingCards)
+import Deck (Card,Rank, pick, remainingCards)
 import Player(Player(..), bet, charge)
 import Utils(development, createTuples)
 import System.Process
@@ -14,7 +14,7 @@ import Data.Char
 import Control.Monad
 
 -- A hand in a texas holden poker --
-data Hand = Hand { hvalue :: Int, hcards :: [Card]} deriving (Show, Eq, Ord)
+data Hand = Hand { hvalue :: Rank, hcards :: [Card]} deriving (Show, Eq, Ord)
 
 clear = system "clear";
 betMessage = "bet";
