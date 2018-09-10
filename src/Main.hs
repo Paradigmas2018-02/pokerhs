@@ -1,8 +1,10 @@
 
 
-import Player(Player(..))
-import Deck(deck)
-import Poker(giveCards)
+import Player
+import Deck
+import Poker
+import Utils
+import Find
 
 initialTokens = 200
 playerCards = giveCards deck 6

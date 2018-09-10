@@ -1,6 +1,7 @@
 module Poker (
     flop,
     newRoles,
+    giveCards,
     Hand(..),
 ) where
 
@@ -16,10 +17,10 @@ import Control.Monad
 data Hand = Hand { hvalue :: Int, hcards :: [Card]} deriving (Show, Eq, Ord)
 
 clear = system "clear";
-bet_message = "bet";
-cover_message = "covered";
-out_message = "run out";
-check_message = "pass";
+betMessage = "bet";
+coverMessage = "covered";
+outMessage = "run out";
+checkMessage = "pass";
 
 
 flop :: IO [Card] -> IO [Card]
@@ -43,12 +44,12 @@ newRoles :: [Player] -> [Player]
 newRoles xs = tail xs ++ [head xs]
 
 showActions :: String -> (Player,Int) -> IO()
-showActions acao (x, y) = do
+showActions acao (x, y) =
   case acao of
-    "1" -> putStrLn ("Player: " ++ (name x) ++ " " ++ bet_message)
-    "2" -> putStrLn ("Player: " ++ (name x) ++ " " ++ cover_message)
-    "3" -> putStrLn ("Player: " ++ (name x) ++ " " ++ out_message)
-    "4" -> putStrLn ("Player: " ++ (name x) ++ " " ++ check_message)
+    "1" -> putStrLn ("Player: " ++ name x ++ " " ++ betMessage)
+    "2" -> putStrLn ("Player: " ++ name x ++ " " ++ coverMessage)
+    "3" -> putStrLn ("Player: " ++ name x ++ " " ++ outMessage)
+    "4" -> putStrLn ("Player: " ++ name x ++ " " ++ checkMessage)
 
   -- Player's Turn --
   --      >> player - player who is playing
