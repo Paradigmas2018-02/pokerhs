@@ -8,6 +8,8 @@ import Utils (findByValue, findBySuit, findCard)
 import Poker (Hand(..))
 import Data.Maybe (fromMaybe)
 
+-- Constant values for hands in poker
+-- Used to compare poker hands ranks.
 valueHighCard = 1
 valuePair = 2
 valueTwoPair = 3
@@ -20,7 +22,7 @@ valueStraightFlush = 9
 valueRoyalFlush = 10
 
 
--- All find hand functions --
+-- All functions for finding hands on poker --
 findFunctions = [findRoyalFlush, findStraightFlush, findFourKind,
                 findFullHouse, findFlush, findStraight, findThreeKind,
                 findTwoPairs, findPair, findHighCard]
@@ -33,6 +35,7 @@ findHand xs =
     in core findFunctions xs
 
 
+-- High card is the lowest rank in poker, in a list of cards this should find the higher value card.
 findHighCard :: [Card] -> Maybe Hand
 findHighCard xs =
     let core xs h_card
@@ -47,6 +50,8 @@ findHighCard xs =
     in core xs (head xs)
 
 
+-- Find a pair of cards on a list of cards.
+-- E.G [4c, 5s, 8c, 4s, 9c] this list should return a hand witht the pair with 4 clubs and 4 spades. 
 findPair :: [Card] -> Maybe Hand
 findPair list
     | null list = Nothing
@@ -134,6 +139,8 @@ findFlush xs =
     in if length xs <= 4 then Nothing else core xs [] [] [] []
 
 
+-- Find a sequence of 5 cards only by value
+-- E.G [4 clubs, 5 hearts, 6 clubs, 7 spades, 8 diamonds]
 findStraight :: [Card] -> Maybe Hand
 findStraight xs =
     let core xs acc ys
@@ -147,6 +154,8 @@ findStraight xs =
     in if length xs <= 4 then Nothing else core xs [] xs
 
 
+-- Find four cards of the same kind, looking for three of a kind and another card.
+-- E.G [2 clubs, 2 hearts, 2 spades, 2 diamonds]
 findFourKind :: [Card] -> Maybe Hand
 findFourKind xs = 
     let core xs acc
@@ -164,6 +173,8 @@ findFourKind xs =
     in core xs []
 
 
+-- Find a Sequence of 5 cards with the same suit.
+-- E.G [2C, 3C, 4C, 5C, 6C]
 findStraightFlush :: [Card] -> Maybe Hand
 findStraightFlush xs =
     let core xs acc ys
@@ -177,6 +188,8 @@ findStraightFlush xs =
     in if length xs <= 4 then Nothing else core xs [] xs
 
 
+-- Find a Royal Straight Flush
+-- Made up of a sequence of the cards 10, 11, J, Q, K and A with the same suit.
 findRoyalFlush :: [Card] -> Maybe Hand
 findRoyalFlush xs =
     case findStraightFlush xs of
@@ -188,6 +201,11 @@ findRoyalFlush xs =
         Nothing -> Nothing 
 
 
+-- Find if a card has a complete sequence on the list
+-- E.G. In this list of cards [4, K, 6, 8, 7, 5, 9]
+-- 4 has a sequence of [4, 5, 6, 7, 8]
+-- 5 has a sequence of [5, 6, 7, 8, 9]
+-- No other cards form a complete sequence
 findSequence :: [Card] -> Card -> Maybe [Card]
 findSequence xs x =
     let core xs x acc 
@@ -200,6 +218,10 @@ findSequence xs x =
     in core xs x []
 
 
+-- Find if a card has a complete sequence with the same suit on the list
+-- E.G. In this list of cards [4 c, 5 c , 6 c , 7 c, 8 c], 4c has a complete sequence of 5 cards with the same suit;
+-- E.G In this list of cards [4 c, 5 c, 6 h, 7 s, 8 c], it has a sequence but no cards have a sequence with 5 cards in the same suit;
+-- In these examples "c" means "clubs", "h" "hearts" and s "spades".
 findSequenceWithSuit :: [Card] -> Card -> Maybe [Card]
 findSequenceWithSuit xs x =
     let core xs x acc
