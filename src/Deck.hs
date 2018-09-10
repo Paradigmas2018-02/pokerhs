@@ -20,9 +20,6 @@ data Suit = Suit { svalue :: Int, sname::String} deriving (Show, Eq, Ord)
 -- A card that have a rank and a suit e.g. Card (Rank {1, "Ace"}, "Spades") --
 data Card = Card { rank :: Rank , suit :: Suit } deriving (Show, Eq, Ord)
 
--- A hand in a texas holden poker --
-data Hand = Hand Card Card deriving (Show, Eq)
-
 
 -- Generate all card ranks for a card e.g. Rank {value=1, name="ace"}
 ranks =
