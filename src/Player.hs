@@ -1,13 +1,17 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Player (
     Player(..),
     bet,
     charge,
 ) where
 
+import GHC.Generics
+import Data.Aeson (ToJSON)
 import Deck (Card)
 
-data Player = Player { name :: String, tokens :: Int, cards :: (Card, Card)} deriving (Show, Eq)
-
+data Player = Player { name :: String, tokens :: Int, cards :: (Card, Card)} deriving (Generic, Show, Eq)
+instance ToJSON Player
 
 -- Make a bet to the game --
 --      >> pl - player that made the bet

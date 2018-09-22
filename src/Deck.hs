@@ -62,15 +62,10 @@ pick xs = do
     return (xs !! i)
 
 
-
-          
-
 -- Return a deck with all remaining cards on a deck --
 --      >> xs - a list with already used cards
-remainingDeck :: IO [Card] -> IO [Card]
-remainingDeck xs = do
-    ys <- xs 
-    return [y | y <- deck, y `notElem` ys]
+remainingDeck :: [Card] -> [Card]
+remainingDeck xs = [x | x <- deck, x `notElem` xs]
 
 
 -- Return a list of cards that have not been picked yet  --
