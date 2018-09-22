@@ -1,3 +1,5 @@
+{-# LANGUAGE DeriveGeneric #-}
+
 module Deck (
     Card(..),
     Rank(..),
@@ -9,16 +11,26 @@ module Deck (
 ) where
 
 import System.Random
+import GHC.Generics
+import Data.Aeson (FromJSON, ToJSON)
 
 -- A rank of a card has a value and a name
-data Rank = Rank { rvalue :: Int, rname :: String} deriving (Show, Eq, Ord)
+data Rank = Rank { rvalue :: Int, rname :: String} deriving (Generic, Show, Eq, Ord)
 
 -- A card suit has a value and a name
-data Suit = Suit { svalue :: Int, sname::String} deriving (Show, Eq, Ord)
+data Suit = Suit { svalue :: Int, sname::String} deriving (Generic, Show, Eq, Ord)
 
 -- A card that have a rank and a suit e.g. Card (Rank {1, "Ace"}, "Spades") --
-data Card = Card { rank :: Rank , suit :: Suit } deriving (Show, Eq, Ord)
+data Card = Card { rank :: Rank , suit :: Suit } deriving (Generic, Show, Eq, Ord)
 
+instance ToJSON Rank
+instance FromJSON Rank
+
+instance ToJSON Suit
+instance FromJSON Suit
+
+instance ToJSON Card
+instance FromJSON Card
 
 -- Generate all card ranks for a card e.g. Rank {value=1, name="ace"}
 ranks =

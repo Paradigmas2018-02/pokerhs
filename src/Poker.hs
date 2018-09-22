@@ -23,10 +23,9 @@ outMessage = "run out";
 checkMessage = "pass";
 
 
-flop :: IO [Card] -> IO [Card]
-flop xs = do
-    ys <- xs
-    core ys []
+flop :: [Card] -> IO [Card]
+flop xs =
+    core xs []
     where core xs c_acc = do
             c <- pick xs
             if length c_acc == 3
