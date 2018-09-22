@@ -1,6 +1,7 @@
 module Utils(
     createTuples,
     destroyTuples,
+    destroyTuple,
     development,
     findCard,
     findByValue,
