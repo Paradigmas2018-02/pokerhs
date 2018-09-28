@@ -5,6 +5,7 @@ module Poker (
     -- newRoles,
     giveCards,
     Hand(..),
+    Table(..),
 ) where
 
 import GHC.Generics
@@ -19,6 +20,9 @@ import Control.Monad
 -- A hand in a texas holden poker --
 data Hand = Hand { hvalue :: Rank, hcards :: [Card]} deriving (Generic, Show, Eq, Ord)
 instance ToJSON Hand
+
+data Table = Table { tcards :: [Card], pot :: Int, thand :: Hand } deriving (Generic, Show)
+instance ToJSON Table
 
 clear = system "clear";
 betMessage = "bet";
