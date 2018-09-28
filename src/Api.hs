@@ -1,7 +1,4 @@
-{-# LANGUAGE
-    OverloadedStrings,
-    DeriveGeneric
-#-}
+{-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
 
 import GHC.Generics
 import Data.Aeson (ToJSON)
