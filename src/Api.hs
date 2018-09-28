@@ -6,7 +6,7 @@ import Web.Scotty
 import Control.Monad.IO.Class
 import Control.Concurrent.MVar
 import Poker(flop, giveCards, Table(..))
-import Deck(Card, deck, remainingDeck, pick)
+import Deck(Card(..), Rank, deck, remainingDeck, pick)
 import Player(Player(..))
 import Utils(destroyTuples, destroyTuple)
 import Find(findHand)
@@ -16,22 +16,28 @@ instance ToJSON Game
 
 
 main = do
-    game <- newMVar newGame
+    mgame <- newGame
+    game <- newMVar mgame
 
     scotty 3000 $ do
         get "/deck" $ json deck
 
         get "/newgame" $ do
             g <- liftIO newGame
-            liftIO $ modifyMVar game $ \game' -> return (newGame, True)
+            liftIO $ modifyMVar game $ \game' -> return (g, True)
             json g
         
-        -- get "/pick" $ do
-        --     var <- liftIO $ readMVar game
-        --     g <- liftIO var
-        --     c <- liftIO $ pick (tcards $ table g ++ destroyTuple (cards $ player1 g) ++ destroyTuple (cards $ player2 g))
-        --     json c
+        get "/pick" $ do
+            g <- liftIO $ readMVar game
+            c <- liftIO $ pick $ remainingDeck (tcards (table g) ++ destroyTuple (cards $ player1 g) ++ destroyTuple (cards $ player2 g))
+            liftIO $ modifyMVar game $ \game' ->
+                return (Game {player1= player1 g, player2 = player2 g, table = Table {tcards = c : tcards (table g), pot = pot $ table g, thand = findHand $ c : tcards (table g)}}, True)
+            json c
            
+        get "/game" $ do
+            g <- liftIO $ readMVar game
+            json g
+    
         -- post "/bet" text "Not Implemented"
 
 
