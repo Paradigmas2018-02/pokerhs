@@ -38,11 +38,19 @@ main = do
             g <- liftIO $ readMVar game
             json g
     
-        get "/bet" $ do
+        get "/human/bet" $ do
             value <- param "value"
             g <- liftIO $ readMVar game
             liftIO $ modifyMVar game $ \game' ->
                 return (Game {player1= fst (bet (player1 g) value (pot $ table g)), player2 = player2 g, table = Table {tcards = tcards $ table g, pot = snd ( bet (player1 g) value (pot $ table g) ), thand = findHand $ tcards (table g)}}, True)
+            ng <- liftIO $ readMVar game
+            json ng
+        
+        get "/bot/bet" $ do
+            value <- param "value"
+            g <- liftIO $ readMVar game
+            liftIO $ modifyMVar game $ \game' ->
+                return (Game {player1= player1 g, player2 = fst (bet (player2 g) value (pot $ table g)), table = Table {tcards = tcards $ table g, pot = snd ( bet (player2 g) value (pot $ table g) ), thand = findHand $ tcards (table g)}}, True)
             ng <- liftIO $ readMVar game
             json ng
 
