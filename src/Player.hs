@@ -11,7 +11,7 @@ import Data.Aeson (ToJSON)
 import Deck (Card)
 import Poker(Hand)
 
-data Player = Player { name :: String, tokens :: Int, cards :: (Card, Card), phand :: Hand} deriving (Generic, Show, Eq)
+data Player = Player { name :: String, tokens :: Int, cards :: (Card, Card), phand :: Hand, payment :: Int } deriving (Generic, Show, Eq)
 instance ToJSON Player
 
 -- Make a bet to the game --

@@ -52,7 +52,7 @@ newGame = do
     f <- flop (remainingDeck (destroyTuples xs))
     return 
         Game {
-            player1 = Player {name="Bot", tokens=200, cards=head xs, phand=findHand $ f ++ destroyTuple (head xs)},
-            player2 = Player {name="Human", tokens=200, cards=xs !! 1, phand=findHand $ f ++ destroyTuple (xs !! 1)},
+            player1 = Player {name="Bot", tokens=200, cards=head xs, phand=findHand $ f ++ destroyTuple (head xs), payment = 0},
+            player2 = Player {name="Human", tokens=200, cards=xs !! 1, phand=findHand $ f ++ destroyTuple (xs !! 1), payment = 0},
             table = Table {tcards = f, pot = 0, thand = findHand f}
         }
