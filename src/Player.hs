@@ -28,5 +28,5 @@ bet pl b p = (charge pl b, p + b)
 charge :: Player -> Int -> Player
 charge p b
     | tokens p == 0 = error "This player can't bet because he has 0 tokens"
-    | tokens p < b = Player {name = name p, tokens = 0, cards = cards p, phand = phand p}
-    | otherwise = Player {name = name p, tokens = tokens p - b, cards = cards p, phand = phand p}
+    | tokens p < b = Player {name = name p, tokens = 0, cards = cards p, phand = phand p, payment = payment p + b}
+    | otherwise = Player {name = name p, tokens = tokens p - b, cards = cards p, phand = phand p, payment = payment p + b}
