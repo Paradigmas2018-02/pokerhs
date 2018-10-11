@@ -44,6 +44,13 @@ main = do
         get "/game" $ do
             g <- liftIO $ readMVar game
             json g
+
+        get "/newturn" $ do
+            g <- liftIO $ readMVar game
+            nt <- liftIO $ newTurn g
+            liftIO $ modifyMVar game $ \game' -> return (nt, True)
+            ng <- liftIO $ readMVar game
+            json ng
             
         post "/bet" $ do
             b <- jsonData
@@ -88,6 +95,28 @@ newGame = do
             table = Table {tcards = f, pot = 0, thand = findHand f}
         }
 
+newTurn :: Game -> IO Game
+newTurn g = do
+    xs <- giveCards deck 2
+    f <- flop (remainingDeck (destroyTuples xs))
+    return
+        Game {
+            player1 = Player {
+                name = "Bot",
+                tokens = tokens $ player1 g,
+                cards = head xs,
+                phand = findHand $ f ++ destroyTuple (head xs),
+                payment = 0
+            },
+            player2 = Player {
+                name = "Human",
+                tokens = tokens $ player2 g,
+                cards = xs !! 1,
+                phand = findHand $ f ++ destroyTuple (xs !! 1),
+                payment = 0
+            },
+            table = Table {tcards = f, pot = 0, thand = findHand f}
+        }
 
 winner :: Game -> Player
 winner g =
