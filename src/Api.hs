@@ -17,6 +17,9 @@ instance ToJSON Game
 data Bet = Bet {player :: String, value :: Int} deriving(Generic, Show)
 instance FromJSON Bet
 
+data Winner = Winner { winnerPlayer :: Player, winnerHand :: Hand, loserHand :: Hand } deriving(Generic, Show)
+instance ToJSON Winner
+
 main = do
     mgame <- newGame
     game <- newMVar mgame
@@ -118,13 +121,14 @@ newTurn g = do
             table = Table {tcards = f, pot = 0, thand = findHand f}
         }
 
-winner :: Game -> Player
+winner :: Game -> Winner
 winner g =
     if (hvalue $ findHand (aux (player1 g) ++ tcards (table g))) >
         (hvalue $ findHand (aux (player2 g) ++ tcards (table g)))
-        then player1 g
+        then 
+            Winner {winnerPlayer = player1 g, winnerHand = findHand (aux (player1 g) ++ tcards (table g)), loserHand = findHand (aux (player2 g) ++ tcards (table g))}
     else
-        player2 g
+        Winner {winnerPlayer = player2 g, winnerHand = findHand (aux (player2 g) ++ tcards (table g)), loserHand = findHand (aux (player1 g) ++ tcards (table g))}
 
 
 aux :: Player -> [Card]
